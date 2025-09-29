@@ -55,7 +55,7 @@ def get_category_id(name):
 # Opinion: I think it should default to true because you can always
 # correction a typoed tag in WordPress when you see it. But if it
 # doesn't get added at all, you might forget.
-def get_tag_id(name: str, create_if_missing: bool = False) -> int:
+def get_tag_id(name: str) -> int:
     auth = HTTPBasicAuth(config.wp_user, config.wp_key)
     return_id = None
 
@@ -67,7 +67,7 @@ def get_tag_id(name: str, create_if_missing: bool = False) -> int:
     # If it doesn't exist, create it and return the new id.
     except:
         print(f"'{name}' doesn't appear to be a valid tag.")
-        if create_if_missing:
+        if config.wp_create_tag_if_missing:
             print("Creating the tag.")
             url = config.wp_url + '/tags'
             headers = {"Content-Type": "application/json"}
@@ -107,7 +107,7 @@ def post_image(title: str, image_info: str, tag_ids=None) -> str:
         "status": "publish",
         "featured_media": image_info['id'],
         "tags": tag_ids,
-        "categories": [get_category_id('art')]
+        "categories": [get_category_id(config.wp_category)]
     }
 
     res = requests.post(url, headers=headers, auth=auth, json=post_data)
