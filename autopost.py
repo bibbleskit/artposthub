@@ -1,9 +1,6 @@
 import wordpress
 import argparse
 
-#wplink = wordpress.post(title, image)
-#print(wplink)
-
 parser = argparse.ArgumentParser()
 parser.add_argument("title", help="The title for the post.", type=str)
 parser.add_argument("image_path", help="The path to the image file.", type=str)
