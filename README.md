@@ -15,7 +15,7 @@ usage: autopost.py [-h] [-a ALTTEXT] [-d DESCRIPTION] [-c CAPTION] [--all] [-w] 
 
 * Manually selected using `-w|--wordpress` option.
 * Supports adding the title, category, tags, description, and alt text.
-* Tags are automatically created if they do not exist.
+* Tags can be automatically created if they do not exist.
 
 In `config.py`:
 ```python
@@ -53,9 +53,9 @@ wp_create_tag_if_missing = True
 ./autopost.py -w -a "A digital painting of a rabbit girl in a blue dress." -d "Penumbra in a rennaisance-ish outfit!" "Penny - Blue Dress" /path/to/penny-blue-dress.png
 ```
 
-# How does autoposthub automatically obtain tags and alt text from the image?
+# How does artposthub automatically obtain tags and alt text from the image?
 
-I'm organizing all of my art images using a [OneFolder](https://github.com/OneFolderApp/OneFolder), a fork of [Allusion](https://github.com/allusion-app/Allusion). OneFolder writes the tags and alt text to the images metadata. This means autoposthub can grab the that data directly from the image.
+I'm organizing all of my art images using a [OneFolder](https://github.com/OneFolderApp/OneFolder), a fork of [Allusion](https://github.com/allusion-app/Allusion). OneFolder writes the tags and alt text to the images metadata. This means artposthub can grab the that data directly from the image.
 
 Unfortunately, this creates a reliance on OneFolder, currently. Since I don't know a friendlier way to keep track of tags and alt text, it'll stay this way until I do. I'll probably do more research to see if there are more standardized ways of doing this.
 
