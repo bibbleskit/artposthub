@@ -14,6 +14,7 @@ def upload_image(img_path: str, alt_text = '', description=''):
     auth = HTTPBasicAuth(config.wp_user, config.wp_key)
     filename=img_path.split('/')[-1]
 
+    # This uploads the image.
     image_info = None
     with open(img_path, 'rb') as image:
         res = requests.post(url=url,
@@ -22,9 +23,13 @@ def upload_image(img_path: str, alt_text = '', description=''):
                         auth=auth)
         image_info = res.json()
 
+    # Try to get alt text if none was supplied.
     if not alt_text:
         alt_text = onefolder.get_alt_text(img_path)
 
+    # If alt text or description was provided, we have to update the image with it.
+    # For some reason, you can't just upload the image with it, so it has to be
+    # a separate post. I'd love to be wrong, though!
     if alt_text or description:
         post_data = {
                 'alt_text': alt_text,
@@ -39,7 +44,13 @@ def upload_image(img_path: str, alt_text = '', description=''):
 
     return image_info
 
+# Returns the id of the category.
 def get_category_id(name):
+    # TODO:
+    # This will raise an exception if the category doesn't exist. Should probably handle that
+    # or automatically create the category, similar to tags.
+    # In this case, I think it would be best to return an error and prevent posting.
+    # Which means checking for the category *before* the image is uploaded.
     url = config.wp_url + '/categories?search=' + name
     auth = HTTPBasicAuth(config.wp_user, config.wp_key)
     
@@ -87,6 +98,7 @@ def get_tag_ids(tags: list[str]) -> list[int]:
 #
 # Returns the link of the post.
 def post_image(title: str, image_info: str, tag_ids=None) -> str:
+    # WordPress uses fancy html comments to turn basic html into blocks.
     content = f"<!-- wp:image {{\"className\":\"size-large\"}} -->\
             <figure class=\"wp-block-image size-large\">\
                 <a href=\"{image_info['link']}\">\
@@ -95,9 +107,11 @@ def post_image(title: str, image_info: str, tag_ids=None) -> str:
             </figure>\
             <!-- /wp:image -->"
 
+    # Add the description to the post, if given.
     if image_info['description']['raw']:
         content += f"<!-- wp:paragraph --><p>{image_info['description']['raw']}</p><!-- /wp:paragraph -->"
 
+    # Actually create the post.
     url = config.wp_url + '/posts'
     headers = {"Content-Type": "application/json"}
     auth = HTTPBasicAuth(config.wp_user, config.wp_key)
